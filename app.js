@@ -34,18 +34,6 @@ var renderList = function(state, element) {
   element.html(itemsHTML);
 };
 
-$(function() {
-	// will run when the page is fully loaded
-	$('#js-shopping-list-form').submit(function(event){
-		event.preventDefault();
-		var newItem = $('#shopping-list-entry').val()
-		addItem(state, newItem)
-		renderList(state, $('.shopping-list'))
-	});
-});
-
-
-
 function getTemplate(item) {
 	var strikeClass = item.checked ? 'shopping-item__checked' : '';
 	var template = '<li>' +
@@ -78,14 +66,27 @@ function getTemplate(item) {
 */
 
 $(".shopping-list").on("click", ".shopping-item-delete", function(event) {
-    var inputfield = $('#entry').val();
-    $(this).parent('div').parent('li').remove();
     event.preventDefault();
+    var inputfield = $('#entry').val();
+  var itemClicked = $(this).parent('div').parent('li').find('.shopping-item').text();
+  
+  for(var i = 0; i<state.items.length; i++) {
+    if(state.items[i].name === itemClicked) {
+      state.items.splice(i, 1);
+    }
+  }
+  renderList(state, $('.shopping-list'));
 });
 
 $(".shopping-list").on("click", ".shopping-item-toggle", function(even) {
    var inputfield = $('#entry').val();
-  $(this).parent('div').parent('li').css("text-decoration", "line-through");
+    var checkItem = $(this).parent('div').parent('li').find('.shopping-item').text();
+    for(var i = 0; i<state.items.length; i++){
+      if(state.items[i].name === checkItem) {
+        state.items[i].checked = true;
+      }
+    }
+    renderList(state, $('.shopping-list'));
 });
 
 
